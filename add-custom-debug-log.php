@@ -53,5 +53,9 @@ if ( ! function_exists( 'write_log' ) ) {
 		} else {
 			error_log( $log );
 		}
+
+		if ( true == $die ) {
+			die();
+		}
 	}
 }
