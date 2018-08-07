@@ -12,7 +12,7 @@
  * Plugin Name: Add Custom Debug Log
  * Plugin URI:  http://github.com/codiceovvio/add-custom-debug-log
  * Description: Little helper plugin to add custom debug notices directly to the default WordPress debug.log file. The WP_DEBUG constant in wp-config.php must be set to true for the plugin to actually work.
- * Version:     0.3.0
+ * Version:     0.4.0
  * Author:      Codice Ovvio
  * Author URI:  http://github.com/codiceovvio
  * Text Domain: none
@@ -40,12 +40,14 @@ if ( ! function_exists( 'write_log' ) ) {
 	 * A custom log for a string, array or object
 	 *
 	 * Handles the correct type of log for each variable type passed.
-	 * @param mixed $log string, array or object to debug.
-	 * @param bool $die whether to exit script execution or not.
 	 *
-	 * @example to log some information:
-	 *          write_log( "The post {$post_to_track} was accessed by {$user_id}" );
-	 * @return mixed
+	 * @param    mixed   $log    string, array or object to debug.
+	 * @param    bool    $die    whether to exit script execution or not.
+	 *
+	 * @example  to log some information:
+	 *           write_log( "The post {$post_to_track} was accessed by {$user_id}" );
+	 *
+	 * @return   mixed
 	 */
 	function write_log( $log, $die ) {
 
@@ -63,6 +65,81 @@ if ( ! function_exists( 'write_log' ) ) {
 		}
 
 		if ( true == $die ) {
+			die();
+		}
+
+	}
+}
+
+
+if ( ! function_exists( 'print_warning_here' ) ) {
+
+	/**
+	 * Handle console notices via WP_CLI
+	 *
+	 * @param    mixed   $string  the log message to handle.
+	 * @param    bool    $die     whether to exit script execution or not.
+	 *
+	 * @return   string  the log warning to print.
+	 */
+	function print_warning_here( $data = null, $die = false ) {
+
+		if ( class_exists( 'WP_CLI' ) || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			WP_CLI::warning( $data );
+		} else {
+			error_log( print_r( $data, true ), 3, ABSPATH . 'wp-content/debug.log' );
+		}
+
+		if ( true === WP_DEBUG ) {
+
+			if ( is_array( $data ) || is_object( $data ) ) {
+				// error_log( print_r( $data, true ) );
+				error_log( print_r( $data, true ), 3, ABSPATH . 'wp-content/debug.log' );
+			} else {
+				// error_log( $data );
+				error_log( $data, 3, ABSPATH . 'wp-content/debug.log' );
+			}
+
+			$wp_data = print_r( $data, true );
+
+			if ( is_wp_error( $wp_data ) ) {
+				$error_string = $wp_data->get_error_message();
+				error_log( $error_string, 3, ABSPATH . 'wp-content/debug.log' );
+			}
+
+			if ( true == $die ) {
+				die();
+			}
+		} else {
+			error_log( 'You have to set WP_DEBUG to "true" in your wp-config.php before you can use this function to write log info into the wp-content/debug.log file' );
+			die();
+		}
+
+	}
+} // End if().
+
+
+if ( ! function_exists( 'stack_debug' ) ) {
+
+	/**
+	* Create a stack breakpoint
+	*
+	* @param    mixed   $string  variable, array or object to debug.
+	* @param    bool    $die     whether to exit script execution or not.
+	*
+	* @return   mixed   the log message to print.
+	*/
+	function stack_debug( $string, $die ) {
+
+		if ( class_exists( 'WP_CLI' ) || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			WP_CLI::warning( print_r( $string, true ) . "\n" );
+		} else {
+			echo '<pre>';
+			var_dump( $string );
+			echo '</pre>';
+		}
+
+		if ( true === $die ) {
 			die();
 		}
 
