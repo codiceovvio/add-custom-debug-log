@@ -1,10 +1,23 @@
 # Add custom debug log
 
-##### Little helper plugin to add custom debug notices directly to the default WordPress debug.log
+###### _Little helper plugin to add custom debug notices directly to the default WordPress debug.log_
+###### _Current version: v0.4.0_
 
+***
 
-Send a customized output to the WordPress debug.log, using an appropriate function for each type to log, e.g. print_r for an array, var_dump for an object, etc...
-It accepts also a second parameter (boolean) to quit execution after the debug stack point.
+##### The plugin includes 3 functions which act in a quite similar way but with different outputs:
+
+- **"write_log"**
+  - _Send a customized output to the WordPress debug.log, using an appropriate function for each type to log, e.g. print_r for an array, var_dump for an object, etc..._
+  - _It accepts also a second parameter (boolean) to quit execution after the debug stack point._
+
+- **"print_warning_here"**
+  - _Handle console notices via WP_CLI, as well as writing its infos into the main WP log file._
+
+- **"stack_debug"**
+  - _Create a stack breakpoint, and prints results to the screen_
+
+***
 
 ##### The WP_DEBUG constant in wp-config.php must be set to true for the plugin to actually work:
 
