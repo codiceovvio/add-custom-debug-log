@@ -15,7 +15,8 @@
   - _Handle console notices via WP_CLI, as well as writing its infos into the main WP log file._
 
 - **"stack_debug"**
-  - _Create a stack breakpoint, and prints results to the screen_
+  - _Create a stack breakpoint, and prints results to the screen_.
+  - _It accepts also a second parameter (boolean) to quit execution after the debug stack point._
 
 ***
 
