@@ -12,7 +12,7 @@
  * Plugin Name: Add Custom Debug Log
  * Plugin URI:  http://github.com/codiceovvio/add-custom-debug-log
  * Description: Little helper plugin to add custom debug notices directly to the default WordPress debug.log file. The WP_DEBUG constant in wp-config.php must be set to true for the plugin to actually work.
- * Version:     0.4.1
+ * Version:     0.4.2
  * Author:      Codice Ovvio
  * Author URI:  http://github.com/codiceovvio
  * Text Domain: none
@@ -49,14 +49,14 @@ if ( ! function_exists( 'write_log' ) ) {
 	 *
 	 * @return   mixed
 	 */
-	function write_log( $log, $die ) {
+	function write_log( $log, $die = false ) {
 
 		if ( is_wp_error( $log ) ) {
 			$error_string = $log->get_error_message();
 			error_log( $error_string );
 		} elseif ( is_array( $log ) || is_object( $log ) ) {
 			ob_start();
-			var_dump( $string );
+			var_dump( $log );
 			$content = ob_get_contents();
 			ob_end_clean();
 			error_log( print_r( $content, true ) );
