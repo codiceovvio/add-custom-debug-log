@@ -77,7 +77,7 @@ if ( ! function_exists( 'print_warning_here' ) ) {
 	/**
 	 * Handle console notices via WP_CLI
 	 *
-	 * @param    mixed   $string  the log message to handle.
+	 * @param    mixed   $data    the log message to handle.
 	 * @param    bool    $die     whether to exit script execution or not.
 	 *
 	 * @return   string  the log warning to print.
@@ -124,23 +124,27 @@ if ( ! function_exists( 'stack_debug' ) ) {
 	/**
 	* Create a stack breakpoint
 	*
-	* @param    mixed   $string  variable, array or object to debug.
-	* @param    bool    $die     whether to exit script execution or not.
+	* @param    string  $desc      optional intro text to prepend.
+	* @param    mixed   $to_debug  variable, array or object to debug.
+	* @param    bool    $die       whether to exit script execution or not.
 	*
 	* @return   mixed   the log message to print.
 	*/
-	function stack_debug( $string, $die ) {
+	function stack_debug( $to_debug, $die, $desc = '' ) {
 
 		if ( class_exists( 'WP_CLI' ) || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-			WP_CLI::warning( print_r( $string, true ) . "\n" );
+			WP_CLI::warning( print_r( $to_debug, true ) . "\n" );
 		} else {
 			echo '<pre>';
-			if ( is_array( $string ) ) {
-				print_r( $string );
-			} elseif (  is_object( $string ) ) {
-				var_dump( $string );
+			if ( ! empty( $desc ) ) {
+				echo '<strong style="color: red;">' . $desc . '</strong></br>';
+			}
+			if ( is_array( $to_debug ) ) {
+				print_r( $to_debug );
+			} elseif (  is_object( $to_debug ) ) {
+				var_dump( $to_debug );
 			} else {
-				echo $string;
+				echo $to_debug;
 			}
 			echo '</pre>';
 		}
